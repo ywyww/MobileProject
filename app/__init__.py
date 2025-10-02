@@ -25,4 +25,10 @@ def create_app(test_config=None):
     app.register_blueprint(regulators.bp)
     app.register_blueprint(sensors.bp)
 
+    reg = models.Regulators()
+    reg.name = "Test"
+
+    with app.app_context():
+        models.db.session.add(reg)
+
     return app
