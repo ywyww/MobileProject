@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, current_app
 from sqlalchemy import DateTime
 from sqlalchemy import select, create_engine
 from flask_sqlalchemy.session import Session

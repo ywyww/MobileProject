@@ -20,15 +20,15 @@ def create_app(test_config=None):
     
     with app.app_context():
         models.db.create_all()
+        
+        reg = models.Regulators()
+        reg.name = "Test"
+        models.db.session.add(reg)
+        models.db.session.commit()
+        ...
 
     from .routers import regulators, sensors
     app.register_blueprint(regulators.bp)
     app.register_blueprint(sensors.bp)
-
-    reg = models.Regulators()
-    reg.name = "Test"
-
-    with app.app_context():
-        models.db.session.add(reg)
 
     return app
