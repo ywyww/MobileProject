@@ -1,29 +1,28 @@
 import os
 
 from flask import Flask
+from sqlalchemy import create_engine
+from .db import models
 
 def create_app(test_config=None):
     
+    #app_dir = os.path.join(os.path.dirname(__file__))
+    #db_path = os.path.join(app_dir, 'database.db')
+
     app = Flask(__name__)
     app.config.from_mapping(
+        DEBUG=True,
         SECRET_KEY='dev',
-        DATABASE=os.path.join(app.instance_path, "app.sqlite")
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
     )
     
-    if test_config is None:
-        app.config.from_pyfile('config.py', silent=True)
-    else:
-        app.config.from_mapping(test_config)
+    models.db.init_app(app)
+    
+    with app.app_context():
+        models.db.create_all()
 
-    try:
-        os.makedirs(app.instance_path)
-    except OSError:
-        pass
-
-    from . import db
-    db.init_app(app)
-
-    from . import routes
-    app.register_blueprint(routes.bp)
+    from .routers import regulators, sensors
+    app.register_blueprint(regulators.bp)
+    app.register_blueprint(sensors.bp)
 
     return app

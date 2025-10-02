@@ -6,3 +6,4 @@ dist/
 build/
 db.py
 instance
+database.db

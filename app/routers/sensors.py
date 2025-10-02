@@ -1,20 +1,20 @@
 from flask import Blueprint
 from sqlalchemy import DateTime
 
-bp = Blueprint("blueprint_set")
+bp = Blueprint("sensors", __name__, url_prefix="/sensors")
 
-@bp.route("/sensors", ['GET', 'POST'])
+@bp.route("/", methods=['GET', 'POST'])
 def sensors():
     pass
 
-@bp.route("/sensors/{i}", ['GET', 'POST'])
+@bp.route("/<int:i>", methods=['GET', 'POST'])
 def sensors_curr(i: int):
     """
     change name
     """
     pass
 
-@bp.route("/sensors/measurements", ['GET'])
+@bp.route("/measurements", methods=['GET'])
 def sensors_measurements():
     """
     get current state

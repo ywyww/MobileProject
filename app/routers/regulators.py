@@ -1,21 +1,21 @@
 from flask import Blueprint
 from sqlalchemy import DateTime
 
-bp = Blueprint("blueprint_set")
+bp = Blueprint("regulators", __name__, url_prefix="/regulators")
 
-@bp.route("/regulators", ['GET'])
+@bp.route("/", methods=['GET'])
 def regulators():
     pass
 
-@bp.route("/regulators/{i}", ['GET', 'POST'])
+@bp.route("/<int:i>", methods=['GET', 'POST'])
 def regulators_curr(i: int):
     """
     change sensor, change name, chane required value, change state
     """
     pass
 
-@bp.route("/regulators/states", ['GET'])
-def regulators():
+@bp.route("/states", methods=['GET'])
+def states():
     """
     get current state
     """
