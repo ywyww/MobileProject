@@ -9,6 +9,9 @@ def sensors():
 
 @bp.route("/sensors/{i}", ['GET', 'POST'])
 def sensors_curr(i: int):
+    """
+    change name
+    """
     pass
 
 @bp.route("/sensors/measurements", ['GET'])

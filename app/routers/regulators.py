@@ -7,8 +7,11 @@ bp = Blueprint("blueprint_set")
 def regulators():
     pass
 
-@bp.route("/regulators/{i}", ['GET'])
+@bp.route("/regulators/{i}", ['GET', 'POST'])
 def regulators_curr(i: int):
+    """
+    change sensor, change name, chane required value, change state
+    """
     pass
 
 @bp.route("/regulators/states", ['GET'])
