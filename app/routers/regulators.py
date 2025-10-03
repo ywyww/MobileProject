@@ -9,7 +9,7 @@ bp = Blueprint("regulators", __name__, url_prefix="/regulators")
 @bp.route("/", methods=['GET'])
 def get_regulators():
     """Get all regulators"""
-    regs = models.Regulators.query.all()
+    regs = models.Regulator.query.all()
     
     result = []
     for regulator in regs:
@@ -32,7 +32,7 @@ def states():
 @bp.route("/states/<int:i>", methods=['POST'])
 def push_state(i: int):
     """
-    change sensor, change name, chane required value, change state
+    change sensor, change name, change required value, change state
     """
     pass
 
