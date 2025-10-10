@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request, current_app
 from sqlalchemy import DateTime
-from sqlalchemy import select, create_engine
+from sqlalchemy import select, create_engine, and_
 from flask_sqlalchemy.session import Session
 from app.db import models
 
@@ -8,8 +8,11 @@ bp = Blueprint("regulators", __name__, url_prefix="/regulators")
 
 @bp.route("/", methods=['GET'])
 def get_regulators():
-    """Get all regulators"""
-    regs = models.Regulator.query.all()
+    """Get working and linked regulators"""
+    regs = models.Regulator.query\
+    .join(
+        models.Link, models.Regulator.id == models.Link.regulator_id
+    ).all()
     
     result = []
     for regulator in regs:
