@@ -23,19 +23,7 @@ def create_app(test_config=None):
         
         reg = models.Regulator()
         reg.name = "Test"
-        sens = models.Sensor()
-        sens.name = "Test2"
-        
         models.db.session.add(reg)
-        models.db.session.add(sens)
-
-        models.db.session.flush()  
-
-        link = models.Link()
-        link.sensor_id = sens.id
-        link.regulator_id = reg.id
-
-        models.db.session.add(link)
         models.db.session.commit()
         ...
 
