@@ -26,15 +26,41 @@ def get_linked_regulators():
     return jsonify(result)
 
 
-@bp.route("/states", methods=['GET', 'POST'])
+@bp.route("/mode", methods=['GET', 'POST'])
 def states():
-    """
-    get all state, push new state
-    """
-    pass
+    states = models.RegulationMode.query\
+    .join(
+        models.Regulator, models.RegulationMode.regulator_id == models.Regulator.id
+    )\
+    .join(
+        models.Link, models.RegulationMode.regulator_id == models.Link.regulator_id
+    )\
+    .where(
+        models.Link.status == True
+    )\
+    .add_columns(
+        models.Link.regulator_id,
+        models.Regulator.name,
+        models.RegulationMode.required,
+        models.RegulationMode.timestamp
+    )\
+    .all()
+
+    result = []
+    for mode in states:
+        result.append(
+        {
+            'reg_id': mode.regulator_id,
+            'name': mode.name,
+            'required': mode.required,
+            'timestamp': mode.timestamp,
+        }
+        )
+    
+    return jsonify(result)
 
 
-@bp.route("/states/<int:i>", methods=['POST'])
+@bp.route("/mode/<int:i>", methods=['POST'])
 def push_state(i: int):
     """
     change sensor, change name, change required value, change state
