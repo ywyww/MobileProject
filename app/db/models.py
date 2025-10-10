@@ -29,6 +29,7 @@ class Link(db.Model):
     regulator_id = mapped_column(ForeignKey("regulator.id"))
     ...
 
+
 class Measurement(db.Model):
     __tablename__ = "sensor_measurement"
     id = mapped_column(Integer, primary_key=True)
@@ -37,10 +38,12 @@ class Measurement(db.Model):
     sensor_id = mapped_column(ForeignKey("sensor.id"))
     ...
 
+
 class RegulationMode(db.Model):
     """
     regulation mode:
-    if regulator is working: required value has been setted
+    if regulator is working: required value has been setted 
+    else required value is null or this table dont care
     """
     __tablename__ = "regulation_state"
    
