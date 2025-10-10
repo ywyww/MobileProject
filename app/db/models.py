@@ -25,6 +25,8 @@ class Sensor(db.Model):
 class Link(db.Model):
     __tablename__ = "link"
     id = mapped_column(Integer, primary_key=True)
+    description = mapped_column(String, nullable=True)
+    status = mapped_column(Boolean, nullable=False, default=True)
     sensor_id = mapped_column(ForeignKey("sensor.id"))
     regulator_id = mapped_column(ForeignKey("regulator.id"))
     ...
