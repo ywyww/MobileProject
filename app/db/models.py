@@ -27,31 +27,15 @@ class Link(db.Model):
     id = mapped_column(Integer, primary_key=True)
     sensor_id = mapped_column(ForeignKey("sensor.id"))
     regulator_id = mapped_column(ForeignKey("regulator.id"))
-    description = mapped_column(String, nullable=True)
     ...
 
-class Measurement(db.Model):
-    __tablename__ = "sensor_measurement"
-    id = mapped_column(Integer, primary_key=True)
-    timestamp = mapped_column(DateTime)
-    measurement = mapped_column(Float)
-    ...
 
-class SensorState(db.Model):
-    __tablename__ = "sensor_state"
+class State(db.Model):
+    __tablename__ = "state"
    
     id = mapped_column(Integer, primary_key=True)
-    state = mapped_column(Boolean, nullable=False)
+    is_regulated = mapped_column(Boolean, nullable=True)    # reg value
+    measurement = mapped_column(Float, nullable=True)   # sensor value
     timestamp = mapped_column(DateTime)
-    sensor_id = mapped_column(ForeignKey("sensor.id"))
+    link_id = mapped_column(ForeignKey("link.id"))
     ...
-
-
-class RegulatorState(db.Model):
-    __tablename__ = "regulator_state"
-   
-    id = mapped_column(Integer, primary_key=True)
-    state = mapped_column(Boolean, nullable=False)
-    timestamp = mapped_column(DateTime)
-    regulator_id = mapped_column(ForeignKey("sensor.id"))
-    ...  

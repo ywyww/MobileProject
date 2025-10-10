@@ -21,7 +21,7 @@ def create_app(test_config=None):
     with app.app_context():
         models.db.create_all()
         
-        reg = models.Regulator()
+        reg = models.Regulators()
         reg.name = "Test"
         models.db.session.add(reg)
         models.db.session.commit()
