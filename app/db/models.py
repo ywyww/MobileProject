@@ -53,5 +53,5 @@ class RegulatorState(db.Model):
     id = mapped_column(Integer, primary_key=True)
     state = mapped_column(Boolean, nullable=False)
     timestamp = mapped_column(DateTime)
-    regulator_id = mapped_column(ForeignKey("sensor.id"))
+    regulator_id = mapped_column(ForeignKey("regulator.id"))
     ...  
