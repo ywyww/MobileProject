@@ -1,0 +1,3 @@
+curl -X POST http://localhost:5000/regulators/mode -H "Content-Type: application/json" -d '{"regulator_id": 1, "required": 25.5}'
+
+

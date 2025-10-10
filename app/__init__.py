@@ -43,7 +43,15 @@ def create_app(test_config=None):
         mode.regulator_id = reg.id
         mode.required = 320
         mode.timestamp = datetime.datetime.now()
+        
         models.db.session.add(mode)
+        models.db.session.flush()
+        mode = models.RegulationMode()
+        mode.regulator_id = reg.id
+        mode.required = 320
+        mode.timestamp = datetime.datetime.now()
+        models.db.session.add(mode)
+
 
         models.db.session.commit()
         ...
