@@ -3,6 +3,7 @@ import os
 from flask import Flask
 from sqlalchemy import create_engine
 from .db import models
+import datetime
 
 def create_app(test_config=None):
     
@@ -21,9 +22,37 @@ def create_app(test_config=None):
     with app.app_context():
         models.db.create_all()
         
-        reg = models.Regulators()
+        reg = models.Regulator()
         reg.name = "Test"
+
+        sens = models.Sensor()
+        sens.name = "Test2"
+
         models.db.session.add(reg)
+        models.db.session.add(sens)
+        models.db.session.flush()  
+
+        link = models.Link()
+        link.sensor_id = sens.id
+        link.regulator_id = reg.id
+
+        models.db.session.add(link)
+        models.db.session.flush()  
+
+        mode = models.RegulationMode()
+        mode.regulator_id = reg.id
+        mode.required = 320
+        mode.timestamp = datetime.datetime.now()
+        
+        models.db.session.add(mode)
+        models.db.session.flush()
+        mode = models.RegulationMode()
+        mode.regulator_id = reg.id
+        mode.required = 320
+        mode.timestamp = datetime.datetime.now()
+        models.db.session.add(mode)
+
+
         models.db.session.commit()
         ...
 
