@@ -1,15 +1,12 @@
-import os
-
 from flask import Flask
 from sqlalchemy import create_engine
 from .db import models
 import datetime
+import logging
 
 def create_app(test_config=None):
+    logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
     
-    #app_dir = os.path.join(os.path.dirname(__file__))
-    #db_path = os.path.join(app_dir, 'database.db')
-
     app = Flask(__name__)
     app.config.from_mapping(
         DEBUG=True,
@@ -51,7 +48,6 @@ def create_app(test_config=None):
         mode.required = 320
         mode.timestamp = datetime.datetime.now()
         models.db.session.add(mode)
-
 
         models.db.session.commit()
         ...
