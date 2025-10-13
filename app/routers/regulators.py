@@ -8,7 +8,7 @@ import datetime
 bp = Blueprint("regulators", __name__, url_prefix="/regulators")
 
 @bp.route("/", methods=['GET', 'POST'])
-def get_linked_regulators():
+def linked_regulators():
     if request.method == 'GET':
         """Get linked regulators"""
         regs = models.Regulator.query\
@@ -61,7 +61,7 @@ def get_linked_regulators():
 
 
 @bp.route("/mode", methods=['GET', 'POST'])
-def get_modes():
+def modes():
     if request.method == 'GET':
         states = models.RegulationMode.query\
         .join(
