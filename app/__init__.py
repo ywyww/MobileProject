@@ -27,6 +27,7 @@ def create_app(test_config=None):
 
         sens = models.Sensor()
         sens.name = "Test2"
+        sens.gpio = 3
 
         models.db.session.add(reg)
         models.db.session.add(sens)
