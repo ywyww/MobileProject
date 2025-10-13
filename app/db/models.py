@@ -12,6 +12,7 @@ class Regulator(db.Model):
 
     id = mapped_column(Integer, primary_key=True)
     name = mapped_column(String, nullable=True)
+    gpio = mapped_column(Integer, nullable=False)
     ...
 
 class Sensor(db.Model):
