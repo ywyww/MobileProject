@@ -1,6 +1,6 @@
-from app.db.worker import SQLProviderRegulator
 import wiringpi
-import logging
+
+from app.db.worker import SQLProviderRegulator
 
 
 class Model:
@@ -9,7 +9,7 @@ class Model:
         ...
 
 
-    def calculate_regulator_signal(self, required_value, current_value) -> int:
+    def _calculate_regulator_signal(self, required_value, current_value) -> int:
         relay = Relay(required_value)
         return relay.update(current_value)
 
@@ -21,11 +21,12 @@ class Model:
         regulators = SQLProviderRegulator.get_regulator_modes()
         
         for regulator in regulators:
-            signal = self.calculate_regulator_signal(regulator.required, ...)   # PASTE SQL FOR PARSING SENSORS DATA
+            signal = self._calculate_regulator_signal(regulator.required, ...)   # PASTE SQL FOR PARSING SENSORS DATA
             wiringpi.pinMode(regulator.gpio, 1)       # Set pin 6 to 1 ( OUTPUT )
             wiringpi.digitalWrite(regulator.gpio, signal)
         ...
     ...
+
 
 class Relay:
     def __init__(self, required_value, bandcoeff=0.1):
@@ -37,7 +38,6 @@ class Relay:
     def update(self, current_value: float) -> int:
         upper_bound = self.required_value + self.band / 2
         lower_bound = self.required_value - self.band / 2
-        control_signal = 0
         
         if current_value > upper_bound:
             self.raising = False
@@ -45,10 +45,8 @@ class Relay:
             self.raising = True
             
         if self.raising:
-            control_signal = 1
-        else:
-            control_signal = 0
+            return 1
 
-        return control_signal
+        return 0
     ...
     

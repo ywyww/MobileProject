@@ -1,5 +1,4 @@
 from flask import Blueprint
-from sqlalchemy import DateTime
 
 bp = Blueprint("sensors", __name__, url_prefix="/sensors")
 

@@ -2,10 +2,13 @@ from sqlalchemy import *
 from sqlalchemy.orm import *
 from flask_sqlalchemy import *
 
+
 class Base(DeclarativeBase, MappedAsDataclass):
     pass
 
+
 db = SQLAlchemy(model_class=Base)
+
 
 class Regulator(db.Model):
     __tablename__ = "regulator"
@@ -14,6 +17,7 @@ class Regulator(db.Model):
     name = mapped_column(String, nullable=True)
     gpio = mapped_column(Integer, nullable=False)
     ...
+
 
 class Sensor(db.Model):
     __tablename__ = "sensor"

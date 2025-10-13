@@ -1,9 +1,7 @@
-from flask import Blueprint, jsonify, request, current_app
-from sqlalchemy import DateTime
-from sqlalchemy import select, create_engine, func
-from flask_sqlalchemy.session import Session
-from app.db import models
 import datetime
+from flask import Blueprint, jsonify, request
+
+from app.db import models
 from app.db.worker import SQLProviderRegulator
 
 bp = Blueprint("regulators", __name__, url_prefix="/regulators")

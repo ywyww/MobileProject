@@ -1,8 +1,9 @@
-from flask import Flask
-from sqlalchemy import create_engine
-from .db import models
 import datetime
 import logging
+
+from flask import Flask
+
+from app.db import models
 
 def create_app(test_config=None):
     logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
