@@ -24,6 +24,7 @@ class Sensor(db.Model):
 
     id = mapped_column(Integer, primary_key=True)
     name = mapped_column(String, nullable=True)
+    gpio = mapped_column(Integer, nullable=False)
     ...
 
 
@@ -32,8 +33,8 @@ class Link(db.Model):
     id = mapped_column(Integer, primary_key=True)
     description = mapped_column(String, nullable=True)
     status = mapped_column(Boolean, nullable=False, default=True)
-    sensor_id = mapped_column(ForeignKey("sensor.id"))
-    regulator_id = mapped_column(ForeignKey("regulator.id"))
+    sensor_id = mapped_column(ForeignKey("sensor.id"), nullable=False)
+    regulator_id = mapped_column(ForeignKey("regulator.id"), nullable=True)
     ...
 
 
