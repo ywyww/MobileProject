@@ -1,9 +1,8 @@
-from flask import Blueprint, jsonify, request, current_app
-from sqlalchemy import DateTime
-from sqlalchemy import select, create_engine, func
-from flask_sqlalchemy.session import Session
-from app.db import models
 import datetime
+from flask import Blueprint, jsonify, request
+
+from app.db import models
+from app.db.worker import SQLProviderRegulator
 
 bp = Blueprint("regulators", __name__, url_prefix="/regulators")
 
@@ -11,12 +10,7 @@ bp = Blueprint("regulators", __name__, url_prefix="/regulators")
 def linked_regulators():
     if request.method == 'GET':
         """Get linked regulators"""
-        regs = models.Regulator.query\
-        .join(
-            models.Link, models.Regulator.id == models.Link.regulator_id
-        )\
-        .where(models.Link.status == True)\
-        .all()
+        regs = SQLProviderRegulator.get_linked_regulators()
 
         result = []
         for regulator in regs:
@@ -63,29 +57,7 @@ def linked_regulators():
 @bp.route("/mode", methods=['GET', 'POST'])
 def modes():
     if request.method == 'GET':
-        states = models.RegulationMode.query\
-        .join(
-            models.Regulator, models.RegulationMode.regulator_id == models.Regulator.id
-        )\
-        .join(
-            models.Link, models.RegulationMode.regulator_id == models.Link.regulator_id
-        )\
-        .where(
-            models.Link.status == True
-        )\
-        .group_by(
-            models.Link.regulator_id
-        )\
-        .order_by(
-            func.max(models.RegulationMode.timestamp).desc()
-        )\
-        .add_columns(
-            models.Link.regulator_id,
-            models.Regulator.name,
-            models.RegulationMode.required,
-            models.RegulationMode.timestamp
-        )\
-        .all()
+        states = SQLProviderRegulator.get_regulator_modes()
 
         result = []
         for mode in states:
@@ -95,7 +67,6 @@ def modes():
                 'required': mode.required,
                 'timestamp': mode.timestamp,
             })
-
         return jsonify(result)
     elif request.method == 'POST':
         try:

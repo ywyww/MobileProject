@@ -2,17 +2,22 @@ from sqlalchemy import *
 from sqlalchemy.orm import *
 from flask_sqlalchemy import *
 
+
 class Base(DeclarativeBase, MappedAsDataclass):
     pass
 
+
 db = SQLAlchemy(model_class=Base)
+
 
 class Regulator(db.Model):
     __tablename__ = "regulator"
 
     id = mapped_column(Integer, primary_key=True)
     name = mapped_column(String, nullable=True)
+    gpio = mapped_column(Integer, nullable=False)
     ...
+
 
 class Sensor(db.Model):
     __tablename__ = "sensor"
@@ -25,6 +30,7 @@ class Sensor(db.Model):
 
 class Link(db.Model):
     __tablename__ = "link"
+
     id = mapped_column(Integer, primary_key=True)
     description = mapped_column(String, nullable=True)
     status = mapped_column(Boolean, nullable=False, default=True)
@@ -35,6 +41,7 @@ class Link(db.Model):
 
 class Measurement(db.Model):
     __tablename__ = "sensor_measurement"
+
     id = mapped_column(Integer, primary_key=True)
     timestamp = mapped_column(DateTime)
     measurement = mapped_column(Float)

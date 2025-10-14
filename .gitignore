@@ -1,4 +1,5 @@
 .venv/
+.vscode/
 
 __pycache__/
 
@@ -7,3 +8,4 @@ build/
 db.py
 instance
 database.db
+app.log
