@@ -44,3 +44,5 @@ class SQLProviderRegulator:
         .all()
 
         return states
+
+# TODO SQLProviderSensors

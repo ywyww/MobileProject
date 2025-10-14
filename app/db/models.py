@@ -30,6 +30,7 @@ class Sensor(db.Model):
 
 class Link(db.Model):
     __tablename__ = "link"
+
     id = mapped_column(Integer, primary_key=True)
     description = mapped_column(String, nullable=True)
     status = mapped_column(Boolean, nullable=False, default=True)
@@ -40,6 +41,7 @@ class Link(db.Model):
 
 class Measurement(db.Model):
     __tablename__ = "sensor_measurement"
+
     id = mapped_column(Integer, primary_key=True)
     timestamp = mapped_column(DateTime)
     measurement = mapped_column(Float)

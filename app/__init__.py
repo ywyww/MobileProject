@@ -22,6 +22,7 @@ def create_app(test_config=None):
         
         reg = models.Regulator()
         reg.name = "Test"
+        reg.gpio = 4
 
         sens = models.Sensor()
         sens.name = "Test2"
