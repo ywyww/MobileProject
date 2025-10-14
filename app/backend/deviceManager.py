@@ -51,8 +51,10 @@ class Model:
         .all()
         
         for record in records:
-            signal = self._calculate_regulator_signal(record.required, record.required)   # PASTE SQL FOR PARSING SENSORS DATA
-            wiringpi.pinMode(record.regulator_gpio, 1)       # Set pin 6 to 1 ( OUTPUT )
+            wiringpi.pinMode(record.sensor_gpio, 0)
+            current = wiringpi.digitalRead(record.sensor_gpio)
+            signal = self._calculate_regulator_signal(record.required, current)
+            wiringpi.pinMode(record.regulator_gpio, 1)
             wiringpi.digitalWrite(record.regulator_gpio, signal)
         ...
     ...
