@@ -1,9 +1,40 @@
 import datetime
 import logging
+import atexit
 
 from flask import Flask
 
 from app.db import models
+from app.backend.deviceManager import Model
+from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+
+scheduler = None
+
+def init_scheduler(app, model: Model):
+    global scheduler
+    
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(
+        func=model.use_regulators,
+        trigger=IntervalTrigger(seconds=5),
+        args=[app],
+        id='survey',
+        name='опрос_датчиков',
+        replace_existing=True
+    )
+    
+    scheduler.start()
+    logging.info("Scheduler started")
+    
+    atexit.register(shutdown_scheduler)
+
+def shutdown_scheduler():
+    global scheduler
+    if scheduler:
+        scheduler.shutdown()
+        logging.info("Scheduler stoped")
+
 
 def create_app(test_config=None):
     logging.basicConfig(filename='app.log', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -12,20 +43,21 @@ def create_app(test_config=None):
     app.config.from_mapping(
         DEBUG=True,
         SECRET_KEY='dev',
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'
+        SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:',
+        SENSORS_SURVEY_ENABLED=False
     )
-    
+
     models.db.init_app(app)
     
     with app.app_context():
         models.db.create_all()
         
         reg = models.Regulator()
-        reg.name = "Test"
+        reg.name = 'Test'
         reg.gpio = 4
 
         sens = models.Sensor()
-        sens.name = "Test2"
+        sens.name = 'Test2'
         sens.gpio = 3
 
         models.db.session.add(reg)
@@ -58,5 +90,12 @@ def create_app(test_config=None):
     from .routers import regulators, sensors
     app.register_blueprint(regulators.bp)
     app.register_blueprint(sensors.bp)
+
+    if app.config['SENSORS_SURVEY_ENABLED']:
+        logging.debug('sensors survey mode enabled')
+        model = Model()
+        init_scheduler(app, model)
+    else:
+        logging.debug('sensors survey mode disabled')
 
     return app

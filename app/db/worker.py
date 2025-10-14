@@ -1,4 +1,4 @@
-from models import *
+from app.db.models import *
 
 
 class SQLProviderRegulator:
