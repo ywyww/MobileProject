@@ -1,4 +1,5 @@
-import wiringpi
+import OPi.GPIO as GPIO
+import datetime
 
 from app.db.worker import SQLProviderRegulator
 from app.db.models import *
@@ -6,7 +7,7 @@ from app.db.models import *
 
 class Model:
     def __init__(self):
-        wiringpi.wiringPiSetup()
+        GPIO.setmode(GPIO.BOARD)
         ...
 
 
@@ -50,13 +51,24 @@ class Model:
         )\
         .all()
         
+        ts = datetime.datetime.now()
         for record in records:
-            wiringpi.pinMode(record.sensor_gpio, 0)
-            current = wiringpi.digitalRead(record.sensor_gpio)
+            GPIO.setup(record.sensor_gpio, GPIO.IN)
+            current = GPIO.input(record.sensor_gpio)
+            
+            measure = Measurement()
+            measure.measurement = current
+            measure.sensor_id = record.sensor_id
+            measure.timestamp = ts
+            db.session.add(measure)
+
             signal = self._calculate_regulator_signal(record.required, current)
-            wiringpi.pinMode(record.regulator_gpio, 1)
-            wiringpi.digitalWrite(record.regulator_gpio, signal)
+            GPIO.setup(record.regulator_gpio, GPIO.OUT)
+            GPIO.output(record.regulator_gpio, signal)
+
+        db.session.commit()
         ...
+
     ...
 
 
