@@ -44,7 +44,7 @@ def create_app(test_config=None):
         DEBUG=True,
         SECRET_KEY='dev',
         SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:',
-        SENSORS_SURVEY_ENABLED=False
+        SENSORS_SURVEY_ENABLED=True
     )
 
     models.db.init_app(app)
@@ -54,7 +54,7 @@ def create_app(test_config=None):
         
         reg = models.Regulator()
         reg.name = 'Test'
-        reg.gpio = 4
+        reg.gpio = 25
 
         sens = models.Sensor()
         sens.name = 'Test2'
@@ -73,15 +73,12 @@ def create_app(test_config=None):
 
         mode = models.RegulationMode()
         mode.regulator_id = reg.id
-        mode.required = 320
+        mode.required = 20
         mode.timestamp = datetime.datetime.now()
         
         models.db.session.add(mode)
         models.db.session.flush()
-        mode = models.RegulationMode()
-        mode.regulator_id = reg.id
-        mode.required = 320
-        mode.timestamp = datetime.datetime.now()
+
         models.db.session.add(mode)
 
         models.db.session.commit()
