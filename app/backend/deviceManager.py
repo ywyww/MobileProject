@@ -1,5 +1,6 @@
-import OPi.GPIO as GPIO
+import logging
 import datetime
+import OPi.GPIO as GPIO
 
 from app.db.worker import SQLProviderRegulator
 from app.db.models import *
@@ -20,6 +21,7 @@ class Model:
         """
         Use last DB info for control regulators
         """
+        logging.debug("Start using regulators")
         records = RegulationMode.query\
         .join(
             Regulator, RegulationMode.regulator_id == Regulator.id
@@ -63,10 +65,12 @@ class Model:
             db.session.add(measure)
 
             signal = self._calculate_regulator_signal(record.required, current)
+            logging.debug(f"signal {signal} to {record.sensor_gpio} from {record.regulator_gpio}")
             GPIO.setup(record.regulator_gpio, GPIO.OUT)
             GPIO.output(record.regulator_gpio, signal)
 
         db.session.commit()
+        logging.debug("Stop using regulators")
         ...
 
     ...

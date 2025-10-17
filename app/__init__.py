@@ -11,14 +11,13 @@ from apscheduler.triggers.interval import IntervalTrigger
 
 scheduler = None
 
-def init_scheduler(app, model: Model):
+def init_scheduler(model: Model):
     global scheduler
     
     scheduler = BackgroundScheduler()
     scheduler.add_job(
         func=model.use_regulators,
         trigger=IntervalTrigger(seconds=5),
-        args=[app],
         id='survey',
         name='опрос_датчиков',
         replace_existing=True
@@ -91,7 +90,7 @@ def create_app(test_config=None):
     if app.config['SENSORS_SURVEY_ENABLED']:
         logging.debug('sensors survey mode enabled')
         model = Model()
-        init_scheduler(app, model)
+        init_scheduler(model)
     else:
         logging.debug('sensors survey mode disabled')
 
