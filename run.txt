@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo FLASK_APP=app:create_app FLASK_RUN_HOST=0.0.0.0 FLASK_RUN_PORT=5000 /home/orangepi/Documents/MobileProject/.venv/bin/flask run

@@ -16,7 +16,6 @@ class Model:
         relay = Relay(required_value)
         return relay.update(current_value)
 
-
     def use_regulators(self):
         """
         Use last DB info for control regulators
@@ -55,26 +54,40 @@ class Model:
         
         ts = datetime.datetime.now()
         for record in records:
-            GPIO.setup(record.sensor_gpio, GPIO.IN)
-            current = GPIO.input(record.sensor_gpio)
-            
-            measure = Measurement()
-            measure.measurement = current
-            measure.sensor_id = record.sensor_id
-            measure.timestamp = ts
-            db.session.add(measure)
+            try:
+                # Сенсор - вход
+                try:
+                    GPIO.setup(record.sensor_gpio, GPIO.IN)
+                except RuntimeError as e:
+                    if "already configured" not in str(e):
+                        raise
+                
+                current = GPIO.input(record.sensor_gpio)
+                
+                measure = Measurement()
+                measure.measurement = current
+                measure.sensor_id = record.sensor_id
+                measure.timestamp = ts
+                db.session.add(measure)
 
-            signal = self._calculate_regulator_signal(record.required, current)
-            logging.debug(f"signal {signal} to {record.sensor_gpio} from {record.regulator_gpio}")
-            GPIO.setup(record.regulator_gpio, GPIO.OUT)
-            GPIO.output(record.regulator_gpio, signal)
+                signal = self._calculate_regulator_signal(record.required, current)
+                logging.debug(f"signal {signal} to {record.sensor_gpio} from {record.regulator_gpio}")
+                
+                # Регулятор - выход
+                try:
+                    GPIO.setup(record.regulator_gpio, GPIO.OUT)
+                except RuntimeError as e:
+                    if "already configured" not in str(e):
+                        raise
+                
+                GPIO.output(record.regulator_gpio, signal)
+
+            except Exception as e:
+                logging.error(f"Error processing GPIO {record.sensor_gpio}/{record.regulator_gpio}: {e}")
+                continue
 
         db.session.commit()
         logging.debug("Stop using regulators")
-        ...
-
-    ...
-
 
 class Relay:
     def __init__(self, required_value, bandcoeff=0.1):
