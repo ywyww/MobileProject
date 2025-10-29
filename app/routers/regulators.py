@@ -106,4 +106,18 @@ def modes():
         except Exception as e:
             models.db.session.rollback()
             return f"{e}", 500
-    ...
+
+
+@bp.route("/status", methods=['GET'])
+def status():
+    states = SQLProviderRegulator.get_regulator_status()
+
+    result = []
+    for mode in states:
+        result.append({
+            'regulator_id': mode.regulator_id,
+            'name': mode.name,
+            'timestamp': mode.timestamp,
+            'worked': mode.worked
+        })
+    return jsonify(result)

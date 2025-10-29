@@ -7,7 +7,7 @@ class SQLProviderRegulator:
         """
         Get setted regulator modes
         """
-        states = RegulationMode.query\
+        modes = RegulationMode.query\
         .join(
             Regulator, RegulationMode.regulator_id == Regulator.id
         )\
@@ -31,8 +31,36 @@ class SQLProviderRegulator:
             RegulationMode.timestamp
         )\
         .all()
-        return states
+        return modes
 
+    @staticmethod
+    def get_regulator_status():
+        """
+        Get setted regulator status through working modes
+        
+        """
+        states = RegulationMode.query\
+        .join(
+            Regulator, RegulationMode.regulator_id == Regulator.id
+        )\
+        .join(
+            Link, RegulationMode.regulator_id == Link.regulator_id
+        )\
+        .join(
+            RegulationStatus, RegulationMode.id == RegulationStatus.regulation_mode_id
+        )\
+        .where(
+            Link.status == True, RegulationMode.required != None
+        )\
+        .add_columns(
+            Link.regulator_id,
+            Regulator.name,
+            Regulator.gpio,
+            RegulationStatus.timestamp,
+            RegulationStatus.worked
+        )\
+        .all()
+        return states
 
     @staticmethod
     def get_linked_regulators():
@@ -44,5 +72,6 @@ class SQLProviderRegulator:
         .all()
 
         return states
+    
 
 # TODO SQLProviderSensors

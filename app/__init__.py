@@ -47,7 +47,8 @@ def create_app(test_config=None):
         DEBUG=True,
         SECRET_KEY='dev',
         SQLALCHEMY_DATABASE_URI='sqlite:///:memory:',
-        SENSORS_SURVEY_ENABLED=True
+        SCHEDULER_ENABLED=True,
+        SENSORS_SURVEY_ENABLED=False
     )
 
     models.db.init_app(app)
@@ -76,7 +77,7 @@ def create_app(test_config=None):
 
         mode = models.RegulationMode()
         mode.regulator_id = reg.id
-        mode.required = 20
+        mode.required = 30
         mode.timestamp = datetime.datetime.now()
         
         models.db.session.add(mode)
@@ -88,10 +89,13 @@ def create_app(test_config=None):
     app.register_blueprint(regulators.bp)
     app.register_blueprint(sensors.bp)
 
-    if app.config['SENSORS_SURVEY_ENABLED']:
-        logging.debug('sensors survey mode enabled')
-        model = Model()  # Create model without arguments
-        init_scheduler(app, model)  # Pass both app and model to scheduler
+    if app.config['SCHEDULER_ENABLED']:
+        logging.debug('scheduler enabled')
+        survey_flag = app.config['SENSORS_SURVEY_ENABLED']
+        if survey_flag:
+            logging.debug('sensors survey enabled')
+        model = Model(survey_flag)
+        init_scheduler(app, model)
     else:
         logging.debug('sensors survey mode disabled')
 
