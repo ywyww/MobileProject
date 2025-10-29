@@ -1,6 +1,7 @@
 import logging
 import datetime
 import OPi.GPIO as GPIO
+import random as rand
 
 from app.db.worker import SQLProviderRegulator
 from app.db.models import *
@@ -62,8 +63,8 @@ class Model:
                     if "already configured" not in str(e):
                         raise
                 
-                current = GPIO.input(record.sensor_gpio)
-                
+                #current = GPIO.input(record.sensor_gpio)
+                current = rand.randint(25, 40)
                 measure = Measurement()
                 measure.measurement = current
                 measure.sensor_id = record.sensor_id
