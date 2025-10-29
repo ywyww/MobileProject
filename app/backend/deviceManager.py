@@ -8,8 +8,10 @@ from app.db.models import *
 
 
 class Model:
-    def __init__(self):
-        GPIO.setmode(GPIO.BOARD)
+    def __init__(self, enabled):
+        self.enabled = enabled
+        if (self.enabled):
+            GPIO.setmode(GPIO.BOARD)
         ...
 
 
@@ -48,6 +50,7 @@ class Model:
             Regulator.id.label('regulator_id'),
             Regulator.name.label('regulator_name'),
             Regulator.gpio.label('regulator_gpio'),
+            RegulationMode.id.label('regulation_mode_id'),
             RegulationMode.required,
             RegulationMode.timestamp
         )\
@@ -56,15 +59,17 @@ class Model:
         ts = datetime.datetime.now()
         for record in records:
             try:
-                # Сенсор - вход
-                try:
-                    GPIO.setup(record.sensor_gpio, GPIO.IN)
-                except RuntimeError as e:
-                    if "already configured" not in str(e):
-                        raise
-                
-                #current = GPIO.input(record.sensor_gpio)
+                # input (sensors)
+                if self.enabled:
+                    try:
+                        GPIO.setup(record.sensor_gpio, GPIO.IN)
+                    except RuntimeError as e:
+                        ...
+                    
+                    #current = GPIO.input(record.sensor_gpio)
+
                 current = rand.randint(25, 40)
+                
                 measure = Measurement()
                 measure.measurement = current
                 measure.sensor_id = record.sensor_id
@@ -73,15 +78,21 @@ class Model:
 
                 signal = self._calculate_regulator_signal(record.required, current)
                 logging.debug(f"signal {signal} to {record.sensor_gpio} from {record.regulator_gpio}")
-                
-                # Регулятор - выход
-                try:
-                    GPIO.setup(record.regulator_gpio, GPIO.OUT)
-                except RuntimeError as e:
-                    if "already configured" not in str(e):
-                        raise
-                
-                GPIO.output(record.regulator_gpio, signal)
+
+                status = RegulationStatus()
+                status.timestamp = ts
+                status.worked = signal
+                status.regulation_mode_id = record.regulation_mode_id
+                db.session.add(status)
+
+                # output (regulators)
+                if self.enabled:
+                    try:
+                        GPIO.setup(record.regulator_gpio, GPIO.OUT)
+                    except RuntimeError as e:
+                        ...
+
+                    GPIO.output(record.regulator_gpio, signal)
 
             except Exception as e:
                 logging.error(f"Error processing GPIO {record.sensor_gpio}/{record.regulator_gpio}: {e}")
