@@ -6,4 +6,7 @@ public interface SensorDao {
 
     @Insert
     void insertAll(List<SensorHistory> list);
+
+    @Query("SELECT * FROM SensorHistory ORDER BY timestamp DESC")
+    List<SensorHistory> getAllSync();
 }
