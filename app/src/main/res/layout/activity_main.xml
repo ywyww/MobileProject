@@ -35,4 +35,12 @@
         android:layout_marginTop="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+    <Button
+    android:id="@+id/exportButton"
+    android:text="Экспорт в Excel"
+    android:layout_marginTop="16dp"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"/>
+
 </LinearLayout>
