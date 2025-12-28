@@ -1,0 +1,4 @@
+<style name="Theme.SensorClient" parent="Theme.Material3.DayNight">
+    <item name="colorPrimary">@color/purple_main</item>
+    <item name="colorSecondary">@color/purple_light</item>
+</style>
