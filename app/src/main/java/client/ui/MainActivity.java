@@ -27,5 +27,25 @@ public class MainActivity extends AppCompatActivity {
                         @Override public void onFailure(Call<Void> c, Throwable t) {}
                     });
         });
+        binding.exportButton.setOnClickListener(v -> {
+
+            Executors.newSingleThreadExecutor().execute(() -> {
+                try {
+                    List<SensorHistory> history =
+                            AppDatabase.get(this).sensorDao().getAllSync();
+        
+                    File file = ExcelExporter.export(this, history);
+        
+                    runOnUiThread(() ->
+                        Toast.makeText(this,
+                                "Excel сохранён:\n" + file.getAbsolutePath(),
+                                Toast.LENGTH_LONG).show()
+                    );
+        
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+        });
     }
 }
